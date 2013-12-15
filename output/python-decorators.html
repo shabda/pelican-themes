@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <title>Shabda's Blog</title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="python" />
+
+
+            <link rel="stylesheet" type="text/css" href="/theme/css/foundation.css">
+            <link rel="stylesheet" type="text/css" href="/theme/css/pelican.css">
+</head>
+
+<body id="index" class="home">
+    <div class="row">
+        <div class="columns large-10 large-offset-1">
+
+            <div class="row">
+                <div class="large-6 columns">
+                    <header id="banner" class="body">
+                            <h1><a href="/">Shabda's Blog</a></h1>
+                            <strong>Thoughts on nothing in particular</strong>
+                    </header><!-- /#banner -->
+                </div>
+                <div class="large-6 columns">
+                    <nav>
+                        <ul class="button-group radius">
+                                 <li> <a href="/category/django.html" class="button tiny">django</a></li>
+                                 <li> <a href="/category/python.html" class="button tiny">Python</a></li>
+                                 <li> <a href="/category/websites.html" class="button tiny">websites</a></li>
+                        </ul>
+                    </nav><!-- /#menu -->
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-12 columns">
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">
+      <a href="/python-decorators.html" rel="bookmark"
+         title="Permalink to Python Decorators">Python Decorators</a></h2>
+ 
+  </header>
+  <footer class="post-info">
+    <abbr class="published" title="2011-01-04T10:20:00">
+      Tue 04 January 2011
+    </abbr>
+    <address class="vcard author">
+      By <a class="url fn" href="/author/shabda-raaj.html">Shabda Raaj</a>
+    </address>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <h2>Understanding decorators</h2>
+<p>If you used Django for any length of time, you would have come across the
+<code>login_required</code> decorator. You write <code>@login_required</code> before a view, and it
+magically becomes accessible only to authenticated users.</p>
+<p>Decorators were introduced in python 2.4. <a href="www.python.org/dev/peps/pep-0318/">PEP 318</a>
+is the <a href="http://www.python.org/dev/peps/">PEP</a> describing it. At
+the simplest decorators are nothing but callables returning other callables, and
+the decorator syntax <code>@decorator</code> is nothing but <code>foo = bar(foo)</code>, where both
+<code>bar</code> and <code>foo</code> are callables.</p>
+<p>Let us see some decorators in action.</p>
+<div class="highlight"><pre><span class="nx">In</span> <span class="cp">[</span><span class="mi">1</span><span class="cp">]</span><span class="o">:</span> <span class="nx">def</span> <span class="nx">good_function</span><span class="p">()</span><span class="o">:</span>
+   <span class="p">...</span><span class="o">:</span>     <span class="nx">print</span> <span class="s1">&#39;I am a good function&#39;</span>
+   <span class="p">...</span><span class="o">:</span>
+   <span class="p">...</span><span class="o">:</span>
+
+<span class="nx">In</span> <span class="cp">[</span><span class="mi">2</span><span class="cp">]</span><span class="o">:</span> <span class="nx">def</span> <span class="nx">decorator</span><span class="p">(</span><span class="nx">orig_func</span><span class="p">)</span><span class="o">:</span>
+   <span class="p">...</span><span class="o">:</span>     <span class="nx">def</span> <span class="nx">bad_func</span><span class="p">()</span><span class="o">:</span>
+   <span class="p">...</span><span class="o">:</span>         <span class="nx">print</span> <span class="s1">&#39;I am a bad function&#39;</span>
+   <span class="p">...</span><span class="o">:</span>     <span class="k">return</span> <span class="nx">bad_func</span>
+   <span class="p">...</span><span class="o">:</span>
+
+<span class="nx">In</span> <span class="cp">[</span><span class="mi">3</span><span class="cp">]</span><span class="o">:</span> <span class="nx">good_function</span> <span class="o">=</span> <span class="nx">decorator</span><span class="p">(</span><span class="nx">good_function</span><span class="p">)</span>
+
+<span class="nx">In</span> <span class="cp">[</span><span class="mi">4</span><span class="cp">]</span><span class="o">:</span> <span class="nx">good_function</span><span class="p">()</span>
+<span class="nx">I</span> <span class="nx">am</span> <span class="nx">a</span> <span class="nx">bad</span> <span class="kd">function</span>
+
+<span class="nx">In</span> <span class="cp">[</span><span class="mi">5</span><span class="cp">]</span><span class="o">:</span> <span class="err">@</span><span class="nx">decorator</span>
+   <span class="p">....</span><span class="o">:</span> <span class="nx">def</span> <span class="nx">good_function2</span><span class="p">()</span><span class="o">:</span>
+   <span class="p">....</span><span class="o">:</span>     <span class="nx">print</span> <span class="s1">&#39;I am a good function&#39;</span>
+   <span class="p">....</span><span class="o">:</span>
+   <span class="p">....</span><span class="o">:</span>
+
+<span class="nx">In</span> <span class="cp">[</span><span class="mi">6</span><span class="cp">]</span><span class="o">:</span> <span class="nx">good_function2</span><span class="p">()</span>
+<span class="nx">I</span> <span class="nx">am</span> <span class="nx">a</span> <span class="nx">bad</span> <span class="kd">function</span>
+</pre></div>
+
+
+<p>So you can see that the decorated function depended only on the value of the
+function returned by the decorator.</p>
+<p>Here we discarded the function we were passed. Any useful decorator, <em>decorates</em>
+the original function, so it would use the original function. Let us see an
+actual decorator which may be useful.</p>
+<div class="highlight"><pre><span class="n">def</span> <span class="n">is_val_positive_deco</span><span class="p">(</span><span class="n">orig_func</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">def</span> <span class="n">temp_func</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">:</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">:</span>
+                        <span class="k">return</span> <span class="mi">0</span>
+                <span class="nl">else:</span>
+                        <span class="k">return</span> <span class="n">orig_func</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp_func</span>
+
+<span class="err">@</span><span class="n">is_val_positive_deco</span>
+<span class="n">def</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">import</span> <span class="n">math</span>
+        <span class="k">return</span> <span class="n">math</span><span class="p">.</span><span class="n">pow</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">print</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Here we defined an decorator <code>is_val_positive_deco</code> which will make functions
+return 0, if the argument passed is negative. We can use this decorator to guard
+against MathErrors.</p>
+<h2>Class based decorators</h2>
+<p>Decorators are just callables, and hence can be a class which has <code>__call__</code>
+method. Sometimes they are easier to understand and reason about(than decorators
+written as functions).
+Lets see one,</p>
+<div class="highlight"><pre><span class="n">class</span> <span class="n">LogArgumentsDecorator</span><span class="p">(</span><span class="n">object</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">def</span> <span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">orig_func</span><span class="p">)</span><span class="o">:</span>
+                <span class="n">self</span><span class="p">.</span><span class="n">orig_func</span> <span class="o">=</span> <span class="n">orig_func</span>
+                <span class="n">print</span> <span class="err">&#39;</span><span class="n">started</span> <span class="n">logging</span><span class="o">:</span> <span class="o">%</span><span class="n">s</span><span class="err">&#39;</span> <span class="o">%</span> <span class="n">orig_func</span><span class="p">.</span><span class="n">__name__</span>
+
+        <span class="n">def</span> <span class="n">__call__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span>  <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">:</span>
+                <span class="n">print</span> <span class="err">&#39;</span><span class="n">args</span><span class="o">:</span> <span class="o">%</span><span class="n">s</span><span class="err">&#39;</span> <span class="o">%</span> <span class="n">args</span>
+                <span class="n">print</span> <span class="err">&#39;</span><span class="n">kwargs</span><span class="o">:%</span><span class="n">s</span><span class="err">&#39;</span><span class="o">%</span> <span class="n">kwargs</span>
+                <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">orig_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="err">@</span><span class="n">LogArgumentsDecorator</span>
+<span class="n">def</span> <span class="n">sum_of_squares</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="n">b</span>
+
+<span class="n">print</span> <span class="n">sum_of_squares</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This outputs,</p>
+<div class="highlight"><pre><span class="n">started</span> <span class="n">logging</span><span class="o">:</span> <span class="n">sum_of_squares</span>
+<span class="nl">args:</span> <span class="mi">3</span>
+<span class="nl">kwargs:</span><span class="p">{</span><span class="sc">&#39;b&#39;</span><span class="o">:</span> <span class="mi">4</span><span class="p">}</span>
+<span class="mi">25</span>
+</pre></div>
+
+
+<p>Lets see what happens when we do,</p>
+<div class="highlight"><pre><span class="err">@</span><span class="n">LogArgumentsDecorator</span>
+<span class="n">def</span> <span class="n">sum_of_squares</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">:</span>
+</pre></div>
+
+
+<p>This is equivalent to</p>
+<div class="highlight"><pre><span class="n">sum_of_squares</span> <span class="o">=</span> <span class="n">LogArgumentsDecorator</span><span class="p">(</span><span class="n">sum_of_squares</span><span class="p">)</span>
+</pre></div>
+
+
+<p>At this point, we created a new LogArgumentsDecorator object, so
+<code>LogArgumentsDecorator.__init__(self, sum_of_squares)</code> gets called. Hence
+<code>print 'started logging: %s' % orig_func.__name__</code> line is executed.</p>
+<p>When we do <code>sum_of_squares(...)</code></p>
+<p><code>LogArgumentsDecorator.__call__</code> gets called with the passed values, where we
+print the arguments and call the original function.</p>
+<p>Here is one more example of a class based decorator. Here we rewrite(sort of,
+anyway) Django's login_required decorator as a class based decorator.</p>
+<div class="highlight"><pre><span class="n">class</span> <span class="n">LoginRequiredDecorator</span><span class="p">(</span><span class="n">object</span><span class="p">)</span><span class="o">:</span>
+<span class="n">def</span> <span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">orig_func</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">orig_func</span> <span class="o">=</span> <span class="n">orig_func</span>
+
+<span class="n">def</span> <span class="n">__call__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">:</span>
+    <span class="k">if</span> <span class="n">request</span><span class="p">.</span><span class="n">user</span><span class="p">.</span><span class="n">is_authenticated</span><span class="p">()</span><span class="o">:</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">orig_func</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="nl">else:</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="err">&#39;</span><span class="p">...</span><span class="err">&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Similar to above, it takes the view function, during <code>__init__</code>. When the request
+comes, <code>__call__</code> makes sure that user is authenticated, and takes action
+appropriately.</p>
+  </div><!-- /.entry-content -->
+</section>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-12 columns">
+                    <footer id="contentinfo" class="body">
+                            <address id="about">
+                            Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
+                            which takes great advantage of <a href="http://python.org">Python</a>.
+                            </address><!-- /#about -->
+                    </footer><!-- /#contentinfo -->
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</body>
+</html>

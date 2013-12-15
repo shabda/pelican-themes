@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <title>Shabda's Blog</title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="django" />
+    <meta name="tags" contents="python" />
+
+
+            <link rel="stylesheet" type="text/css" href="/theme/css/foundation.css">
+            <link rel="stylesheet" type="text/css" href="/theme/css/pelican.css">
+</head>
+
+<body id="index" class="home">
+    <div class="row">
+        <div class="columns large-10 large-offset-1">
+
+            <div class="row">
+                <div class="large-6 columns">
+                    <header id="banner" class="body">
+                            <h1><a href="/">Shabda's Blog</a></h1>
+                            <strong>Thoughts on nothing in particular</strong>
+                    </header><!-- /#banner -->
+                </div>
+                <div class="large-6 columns">
+                    <nav>
+                        <ul class="button-group radius">
+                                 <li> <a href="/category/django.html" class="button tiny">django</a></li>
+                                 <li> <a href="/category/python.html" class="button tiny">Python</a></li>
+                                 <li> <a href="/category/websites.html" class="button tiny">websites</a></li>
+                        </ul>
+                    </nav><!-- /#menu -->
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-12 columns">
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">
+      <a href="/django-forms.html" rel="bookmark"
+         title="Permalink to Django forms">Django forms</a></h2>
+ 
+  </header>
+  <footer class="post-info">
+    <abbr class="published" title="2011-01-04T10:20:00">
+      Tue 04 January 2011
+    </abbr>
+    <address class="vcard author">
+      By <a class="url fn" href="/author/shabda-raaj.html">Shabda Raaj</a>
+    </address>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <p>Doing things with Django forms</p>
+<p>Forms are one of the best features of Django. (After models, admin, url routing etc :) ). Here is a quick tutorial describing how to do things with Django forms.</p>
+<ol>
+<li>Basic form</li>
+</ol>
+<p>Prob. You want to show a form, validate it and display it.</p>
+<p>Ans. Create a simple form.</p>
+<div class="highlight"><pre><span class="n">class</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">forms</span><span class="p">.</span><span class="n">Form</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">CharField</span><span class="p">()</span>
+    <span class="n">joined_on</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">DateField</span><span class="p">()</span>
+</pre></div>
+
+
+<p>This wil take care that the form is displayed with two text field,
+and a value for them are filled in, and the second field has correct formatting for a date.</p>
+<p>2.</p>
+<p>Prob. Create a form which has values populated depending upon a runtime value,
+eg you might want to show only the values corresponding to the current subdomain.</p>
+<p>Ans. Create a form with an custom <strong>init</strong>.</p>
+<div class="highlight"><pre><span class="n">class</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">forms</span><span class="p">.</span><span class="n">Form</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">CharField</span><span class="p">()</span>
+    <span class="n">plan</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">ModelChoiceField</span><span class="p">(</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">none</span><span class="p">())</span>
+
+    <span class="n">def</span> <span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">subdomain</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">default_username</span> <span class="o">=</span> <span class="n">default_username</span>
+        <span class="n">super</span><span class="p">(</span><span class="n">UserForm</span><span class="p">,</span> <span class="n">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">fields</span><span class="p">[</span><span class="err">&#39;</span><span class="n">plan</span><span class="err">&#39;</span><span class="p">].</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">subdomain</span> <span class="o">=</span> <span class="n">subdomain</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Here in the <code>__init__</code> we are overriding the default queryset on field <code>plan</code>. Any of the attributes can similarly be overridden.</p>
+<p>However the <code>self.fields</code> is populated only after <code>super(UserForm, self).__init__(*args, **kwargs)</code> is called.</p>
+<p>3.</p>
+<p>Prob. The same form is used in multiple views, and handles the <code>cleaned_data</code> similarly.</p>
+<p>Ans. Create a form with a custom .save()</p>
+<div class="highlight"><pre><span class="n">class</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">forms</span><span class="p">.</span><span class="n">Form</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">CharField</span><span class="p">()</span>
+
+    <span class="n">def</span> <span class="n">save</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">cleaned_data</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="n">username</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="err">&#39;</span><span class="n">username</span><span class="err">&#39;</span><span class="p">])</span>
+        <span class="err">#</span><span class="n">create</span> <span class="n">a</span> <span class="n">profile</span>
+        <span class="n">UserProfile</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span><span class="p">,</span> <span class="p">...</span><span class="n">some</span> <span class="n">more</span> <span class="n">data</span><span class="p">...)</span>
+</pre></div>
+
+
+<p>You could have called this method anything, but this is generally called save, to maintain similarity with <code>ModelForm</code></p>
+<p>4.</p>
+<p>Prob. You need to create a form with fields which have custom validations.</p>
+<p>Ans. Create a form with custom clean_fieldname</p>
+<div class="highlight"><pre><span class="n">class</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">forms</span><span class="p">.</span><span class="n">Form</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">CharField</span><span class="p">()</span>
+
+    <span class="n">def</span> <span class="n">clean_username</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">cleaned_data</span>
+        <span class="nl">try:</span>
+            <span class="n">User</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="err">&#39;</span><span class="n">username</span><span class="err">&#39;</span><span class="p">])</span>
+        <span class="n">User</span><span class="p">.</span><span class="n">DoesNotExist</span><span class="o">:</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="err">&#39;</span><span class="n">username</span><span class="err">&#39;</span><span class="p">]</span>
+        <span class="n">raise</span> <span class="n">forms</span><span class="p">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="err">&#39;</span><span class="n">This</span> <span class="n">username</span> <span class="n">is</span> <span class="n">already</span> <span class="n">taken</span><span class="p">.</span><span class="err">&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Here we can validate that the usernames are not repeated.</p>
+<p>5.</p>
+<p>Prob. You want to create a field which has cross field validations.</p>
+<p>Ans. Create a field with a .clean</p>
+<div class="highlight"><pre><span class="n">class</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">forms</span><span class="p">.</span><span class="n">Form</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">CharField</span><span class="p">()</span>
+
+    <span class="n">password1</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">PasswordField</span><span class="p">()</span>
+    <span class="n">password2</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">PasswordField</span><span class="p">()</span>
+
+    <span class="n">def</span> <span class="n">clean</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">cleaned_data</span>
+        <span class="k">if</span> <span class="s">&quot;password1&quot;</span> <span class="n">in</span> <span class="n">data</span> <span class="n">and</span> <span class="s">&quot;password2&quot;</span> <span class="n">in</span> <span class="n">data</span> <span class="n">and</span> <span class="n">data</span><span class="p">[</span><span class="s">&quot;password1&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">data</span><span class="p">[</span><span class="s">&quot;password2&quot;</span><span class="p">]</span><span class="o">:</span>
+            <span class="n">raise</span> <span class="n">forms</span><span class="p">.</span><span class="n">ValudationError</span><span class="p">(</span><span class="s">&quot;Passwords must be same&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>6.</p>
+<p>Problem.</p>
+<p>You need a form the fields of which depends on some value in the database.
+Eg. The field to be shown are customisable per user.</p>
+<p>Create a form dynamically</p>
+<div class="highlight"><pre><span class="n">def</span> <span class="n">get_user_form_for_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">class</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">forms</span><span class="p">.</span><span class="n">Form</span><span class="p">)</span><span class="o">:</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="p">.</span><span class="n">CharField</span><span class="p">()</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="n">get_profile</span><span class="p">().</span><span class="n">all_field</span><span class="p">()</span>
+            <span class="err">#</span><span class="n">Use</span> <span class="n">field</span> <span class="n">to</span> <span class="n">find</span> <span class="n">what</span> <span class="n">to</span> <span class="n">show</span><span class="p">.</span>
+</pre></div>
+
+
+<p><a href="http://uswaretech.com/blog/2008/10/dynamic-forms-with-django/">This post provides much more details</a></p>
+<p>7.</p>
+<p>Prob. You need to create a Html form which writes to multiple Django models.</p>
+<p>Ans. Django forms are not a one to one mapping to Html forms.</p>
+<div class="highlight"><pre><span class="vi">#in</span> <span class="nx">forms.py</span>
+<span class="nb">class</span> <span class="nx">UserForm</span><span class="p">(</span><span class="nx">forms.ModelForm</span><span class="p">):</span>
+    <span class="nb">class</span> <span class="nb">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">User</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="err">[</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="cp">]</span>
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+
+#in views.py
+def add_user(request):
+    ...
+    if request.method == &quot;POST&quot;:
+        uform = UserForm(data = request.POST)
+        pform = UserProfileForm(data = request.POST)
+        if uform.is_valid() and pform.is_valid():
+            user = uform.save()
+            profile = pform.save(commit = False)
+            profile.user = user
+            profile.save()
+            ....
+    ...
+
+#in template
+<span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">&quot;post&quot;</span><span class="nt">&gt;</span>
+    {{ uform.as_p }}
+    {{ pform.as_p }}
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="err">...</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</pre></div>
+
+
+<p>8.</p>
+<p>Prob. You want to use multiple forms of same type on one page.</p>
+<p>Ans.</p>
+<p>a. If you want a datagrid style ui, use formset.</p>
+<div class="highlight"><pre><span class="n">from</span> <span class="n">django</span><span class="p">.</span><span class="n">forms</span><span class="p">.</span><span class="n">formsets</span> <span class="n">import</span> <span class="n">formset_factory</span>
+<span class="n">forms</span> <span class="o">=</span> <span class="n">formset_factory</span><span class="p">(</span><span class="n">UserForm</span><span class="p">,</span> <span class="n">extra</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="cp">#</span>
+</pre></div>
+
+
+<p><a href="http://docs.djangoproject.com/en/dev/topics/forms/formsets/">Formsets are described much more comprehensively here</a></p>
+<p>b. If you do not need a datagrid style ui, use <code>prefix</code> argument to forms.</p>
+<div class="highlight"><pre><span class="n">Eg</span><span class="p">.</span> <span class="n">you</span> <span class="n">have</span> <span class="n">a</span> <span class="n">survey</span> <span class="n">app</span><span class="p">,</span> <span class="n">and</span> <span class="n">you</span> <span class="n">want</span> <span class="n">a</span> <span class="n">page</span> <span class="n">with</span> <span class="n">all</span> <span class="n">questions</span> <span class="n">from</span> <span class="n">that</span> <span class="n">survey</span> <span class="n">displayed</span><span class="p">.</span>
+
+<span class="cp">#IN views.py</span>
+<span class="n">def</span> <span class="n">survey</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">survey_slug</span><span class="p">)</span>
+    <span class="p">...</span>
+    <span class="n">questions</span> <span class="o">=</span> <span class="n">survey</span><span class="p">.</span><span class="n">questions</span><span class="p">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">question_forms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">question</span> <span class="n">in</span> <span class="n">questions</span><span class="o">:</span>
+        <span class="n">qform</span> <span class="o">=</span> <span class="n">QuestionForm</span><span class="p">(</span><span class="n">question</span><span class="o">=</span><span class="n">question</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">question</span><span class="p">.</span><span class="n">slug</span><span class="p">)</span>
+        <span class="n">question_forms</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">qform</span><span class="p">)</span>
+        <span class="p">...</span>
+    <span class="k">if</span> <span class="n">request</span><span class="p">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&quot;POST&quot;</span><span class="o">:</span>
+        <span class="k">for</span> <span class="n">question</span> <span class="n">in</span> <span class="n">questions</span><span class="o">:</span>
+            <span class="n">qform</span> <span class="o">=</span> <span class="n">QuestionForm</span><span class="p">(</span><span class="n">question</span><span class="o">=</span><span class="n">question</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">question</span><span class="p">.</span><span class="n">slug</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="err">#</span><span class="n">Validate</span> <span class="n">and</span> <span class="k">do</span> <span class="n">save</span> <span class="n">action</span>
+        <span class="p">...</span>
+    <span class="p">...</span>
+</pre></div>
+  </div><!-- /.entry-content -->
+</section>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-12 columns">
+                    <footer id="contentinfo" class="body">
+                            <address id="about">
+                            Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
+                            which takes great advantage of <a href="http://python.org">Python</a>.
+                            </address><!-- /#about -->
+                    </footer><!-- /#contentinfo -->
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</body>
+</html>

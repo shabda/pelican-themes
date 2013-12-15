@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <title>Shabda's Blog</title>
+        <meta charset="utf-8" />
+
+
+
+    <meta name="tags" contents="python" />
+    <meta name="tags" contents="benchmarking" />
+
+
+            <link rel="stylesheet" type="text/css" href="/theme/css/foundation.css">
+            <link rel="stylesheet" type="text/css" href="/theme/css/pelican.css">
+</head>
+
+<body id="index" class="home">
+    <div class="row">
+        <div class="columns large-10 large-offset-1">
+
+            <div class="row">
+                <div class="large-6 columns">
+                    <header id="banner" class="body">
+                            <h1><a href="/">Shabda's Blog</a></h1>
+                            <strong>Thoughts on nothing in particular</strong>
+                    </header><!-- /#banner -->
+                </div>
+                <div class="large-6 columns">
+                    <nav>
+                        <ul class="button-group radius">
+                                 <li> <a href="/category/django.html" class="button tiny">django</a></li>
+                                 <li> <a href="/category/python.html" class="button tiny">Python</a></li>
+                                 <li> <a href="/category/websites.html" class="button tiny">websites</a></li>
+                        </ul>
+                    </nav><!-- /#menu -->
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-12 columns">
+<section id="content" class="body">
+  <header>
+    <h2 class="entry-title">
+      <a href="/benchmarking.html" rel="bookmark"
+         title="Permalink to Benchmarking">Benchmarking</a></h2>
+ 
+  </header>
+  <footer class="post-info">
+    <abbr class="published" title="2010-12-03T10:20:00">
+      Fri 03 December 2010
+    </abbr>
+    <address class="vcard author">
+      By <a class="url fn" href="/author/shabda-raaj.html">Shabda Raaj</a>
+    </address>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <h2>Benchmarking web frameworks.</h2>
+<p>The first step to building a high performance web apps is benchmarking them. The simplest
+benchmarking tool is <code>ab</code>(Apache Benchmark), which is bundled with Apache
+web server. So if you are on *nix system, there is a good chance that you already have this nifty benchmarking tool available.</p>
+<h2>What are we benchmarking?</h2>
+<p>This is a quick and dirty alalysis, and by NO MEANS claims to be scientific. Its aim is more to give a general
+overview of web application performance, and to explain how benchmarking works, not as a comparative study.</p>
+<p>We are benchmarking,</p>
+<ol>
+<li>A Html Page</li>
+<li>A Django Application</li>
+<li>A Php Application</li>
+<li>A Symphony Application</li>
+<li>A rails application</li>
+<li>Frontpage of Wordpress</li>
+<li>Frontpage of a basic Django blog.</li>
+</ol>
+<h2>How are we benchmarking?</h2>
+<p>We have a EC2 Instance running as our web and database server (Both on the same machine). The <code>ab</code> command is run from another EC2 Instance in a different availibilty zone.
+All the applications talk to the same database. All applications except the blogs, show the same thing.</p>
+<p>There are two tables in our database, <code>Department</code> and <code>Employee</code>, with a few entries. Our applications show a department and its Employees.</p>
+  </div><!-- /.entry-content -->
+</section>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="large-12 columns">
+                    <footer id="contentinfo" class="body">
+                            <address id="about">
+                            Proudly powered by <a href="http://getpelican.com/">Pelican</a>,
+                            which takes great advantage of <a href="http://python.org">Python</a>.
+                            </address><!-- /#about -->
+                    </footer><!-- /#contentinfo -->
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</body>
+</html>
