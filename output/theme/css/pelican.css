@@ -1,3 +1,6 @@
 .article p{
     display: inline;
 }
+.footer a{
+    text-transform: lowercase;
+}
