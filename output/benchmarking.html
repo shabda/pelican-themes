@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-          <title>Shabda's Blog</title>
-        <meta charset="utf-8" />
+        <title>
+    Benchmarking |             Shabda's Blog
+
+        </title>
+
+  <meta charset="utf-8" />
 
 
 
@@ -29,23 +33,14 @@
 
             <div class="row">
                 <div class="large-10 large-offset-1 columns">
-<section id="content" class="body">
-  <header>
-    <h2 class="entry-title">
-      <a href="/benchmarking.html" rel="bookmark"
-         title="Permalink to Benchmarking">Benchmarking</a></h2>
- 
-  </header>
-  <footer class="post-info">
-    <abbr class="published" title="2010-12-03T10:20:00">
-      Fri 03 December 2010
-    </abbr>
-    <address class="vcard author">
-      By <a class="url fn" href="/author/shabda-raaj.html">Shabda Raaj</a>
-    </address>
-  </footer><!-- /.post-info -->
-  <div class="entry-content">
-    <h2>Benchmarking web frameworks.</h2>
+    <hr />
+
+    <h1>
+        Benchmarking
+    </h1>
+
+    <div class="entry-content">
+        <h2>Benchmarking web frameworks.</h2>
 <p>The first step to building a high performance web apps is benchmarking them. The simplest
 benchmarking tool is <code>ab</code>(Apache Benchmark), which is bundled with Apache
 web server. So if you are on *nix system, there is a good chance that you already have this nifty benchmarking tool available.</p>
@@ -66,35 +61,40 @@ overview of web application performance, and to explain how benchmarking works, 
 <p>We have a EC2 Instance running as our web and database server (Both on the same machine). The <code>ab</code> command is run from another EC2 Instance in a different availibilty zone.
 All the applications talk to the same database. All applications except the blogs, show the same thing.</p>
 <p>There are two tables in our database, <code>Department</code> and <code>Employee</code>, with a few entries. Our applications show a department and its Employees.</p>
-  </div><!-- /.entry-content -->
-</section>
-                </div>
-            </div>
+    </div>
 
-            <hr />
-            <div class="row footer">
-                <div class="large-12 columns text-center">
-                    <nav>
-                        I write about
-                            <a href="/category/django.html"> django</a> ,                            <a href="/category/python.html"> Python</a> &                            <a href="/category/websites.html"> websites</a>.
-                        Say hi to me at
-                            <a href="http://twitter.com/shabda"> Twitter</a> &                            <a href="http://Github.com/shabda"> Github</a>.
-                    </nav>
+ 
+  <aside class="post-info small">
+    <a href="/author/shabda-raaj.html">Shabda Raaj</a> wrote Benchmarking on Fri 03 December 2010 in Python and tagged it as
+        <a href="/tag/python.html">python</a> &        <a href="/tag/benchmarking.html">benchmarking</a>.
+  </aside>
 
                 </div>
             </div>
 
-            <div class="row">
-                <div class="large-12 columns text-center">
-                    <footer id="contentinfo" class="body">
-                        Powered by <a href="http://getpelican.com/">Pelican</a>
-                        and <a href="http://python.org">Python</a>.
-                    </footer>
+<hr />
+<div class="row">
+    <div class="large-12 columns text-center">
+        <footer>
+            I write about
+                <a href="/category/django.html"> django</a> ,                <a href="/category/python.html"> Python</a> &                <a href="/category/websites.html"> websites</a>.
+            Say hi to me at
+                <a href="http://twitter.com/shabda"> Twitter</a> &                <a href="http://Github.com/shabda"> Github</a>.
+        </footer>
 
-                </div>
-            </div>
-        </div>
-        <div class="columns large-1">&nbsp</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns text-center">
+        <footer id="contentinfo" class="body">
+            Powered by <a href="http://getpelican.com/">Pelican</a>
+            and <a href="http://python.org">Python</a>.
+        </footer>
+
+    </div>
+</div>
+</div>        <div class="columns large-1">&nbsp</div>
     </div>
 
 </body>
